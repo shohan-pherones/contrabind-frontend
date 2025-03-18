@@ -1,4 +1,12 @@
-import { Badge } from "@/components/ui/badge";
+import { IEvent } from "@/interfaces";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { BadgeCent, CalendarDays, Clock, MapPin, Ticket } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { AspectRatio } from "./ui/aspect-ratio";
+import { Badge } from "./ui/badge";
+import { Button, buttonVariants } from "./ui/button";
 import {
   Card,
   CardContent,
@@ -6,25 +14,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { IWorkshop } from "@/interfaces";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { BadgeCent, CalendarDays, Clock, MapPin, Ticket } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { AspectRatio } from "./ui/aspect-ratio";
-import { Button, buttonVariants } from "./ui/button";
+} from "./ui/card";
 
-const Workshop = ({ workshop }: { workshop: IWorkshop }) => {
-  const availableTickets = workshop.maxAttendees - workshop.attendees.length;
+const Event = ({ eventItem }: { eventItem: IEvent }) => {
+  const availableTickets = eventItem.maxAttendees - eventItem.attendees.length;
 
   return (
     <Card className="pt-0 overflow-hidden">
       <AspectRatio ratio={16 / 9}>
         <Image
-          src={workshop.image}
-          alt={workshop.title}
+          src={eventItem.image}
+          alt={eventItem.title}
           width={1280}
           height={720}
           priority
@@ -34,41 +34,41 @@ const Workshop = ({ workshop }: { workshop: IWorkshop }) => {
       <CardHeader>
         <Badge
           variant={
-            workshop.status === "Past"
+            eventItem.status === "Past"
               ? "secondary"
-              : workshop.status === "Running"
+              : eventItem.status === "Running"
               ? "destructive"
               : "default"
           }
         >
-          {workshop.status}
+          {eventItem.status}
         </Badge>
-        <CardTitle>{workshop.title}</CardTitle>
+        <CardTitle>{eventItem.title}</CardTitle>
         <CardDescription>
-          {workshop.description.length > 100
-            ? workshop.description.substring(0, 100)
-            : workshop.description}
-          {workshop.description.length > 100 ? "..." : null}
+          {eventItem.description.length > 100
+            ? eventItem.description.substring(0, 100)
+            : eventItem.description}
+          {eventItem.description.length > 100 ? "..." : null}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-between">
           <p className="flex items-center gap-2">
             <CalendarDays size={18} />
-            {format(workshop.datetime, "MMM dd, yyyy")}
+            {format(eventItem.datetime, "MMM dd, yyyy")}
           </p>
           <p className="flex items-center gap-2">
             <Clock size={18} />
-            {format(workshop.datetime, "hh:mm a")}
+            {format(eventItem.datetime, "hh:mm a")}
           </p>
         </div>
         <p className="flex items-center gap-2">
           <MapPin size={18} />
-          {workshop.venue}
+          {eventItem.venue}
         </p>
         <p className="flex items-center gap-2">
           <BadgeCent size={18} />
-          <span>${workshop.fees} (non-refundable)</span>
+          <span>${eventItem.fees} (non-refundable)</span>
         </p>
         <p className="flex items-center gap-2">
           <Ticket size={18} />
@@ -81,7 +81,7 @@ const Workshop = ({ workshop }: { workshop: IWorkshop }) => {
       <CardFooter className="flex gap-5 mt-auto">
         <Button className="flex-1 cursor-pointer">Register</Button>
         <Link
-          href={`/workshops/${workshop.id}`}
+          href={`/events/${eventItem.id}`}
           className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
         >
           View Details
@@ -91,4 +91,4 @@ const Workshop = ({ workshop }: { workshop: IWorkshop }) => {
   );
 };
 
-export default Workshop;
+export default Event;
